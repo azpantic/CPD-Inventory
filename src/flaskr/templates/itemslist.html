@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Список ресурсов{% endblock title %}
+
+{% block body %}
+  <div class="container">
+
+    <h2>Список ресурсов</h2>
+    <form method="post" class="input-group mt-3">
+      <input type="search"
+             class="form-control rounded"
+             placeholder="Search"
+             name="Search"/>
+      <button type="submit" class="btn btn-outline-primary">search</button>
+    </form>
+
+    {% if items.__len__() != 0 %}
+
+    <table class="table mt-3">
+      <thead>
+        <tr>
+          <th scope="col">Название</th>
+          <th scope="col">Номер ячейки</th>
+          <th scope="col">Количество</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>
+              <a href={{ url_for('item', id = item.id ) }} class="link-info">{{ item.title }}</a>
+            </td>
+            <td>{{ item.cellId }}</td>
+            <td>{{ item.count }}</td>
+            {# <td>
+            <button class="btn btn-primary btn-sm" bs-toggle="modal" data-bs-target="#editItemModel">Взять</button>
+          </td> #}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+
+      <h3 class="text-center mt-3">Кажется по вашему запросу ничего не нашлось :(</h3>
+
+    {% endif %}
+
+  </div>
+{% endblock body %}

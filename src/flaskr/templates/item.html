@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }}{% endblock title %}
+
+{% block body %}
+    <div class="container mt-3">
+        <h4 class="mb-3">Cтраница ресура</h4>
+        <div>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label class="form-label">Название ресурса</label>
+                    <p type="text" class="form-control" name="Title" required="">{{ item.title }}</p>
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label">Номер ячейки</label>
+                    <p type="text" class="form-control" name="CellId" required>{{ item.cellId }}</p>
+                </div>
+                <div class="col-sm-3">
+                    <label for="lastName" class="form-label">Количество</label>
+                    <p type="number" class="form-control" name="Amount"  required>{{ item.count }}</p>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="lastName" class="form-label">Опсание (не обязательно)</label>
+                    <p class="form-control form-control-lg">
+                        {% if item.description == None %}
+                            Описания не обнаруженно :(
+                        {% else %}
+                            {{ item.description }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {# Модалка взяться со склада #}
+        <button class="btn btn-primary btn-lg mt-3 col-sm-2"
+                data-bs-toggle="modal"
+                data-bs-target="#takeItemModel">
+            Взять
+        </button>
+        <div class="modal fade"
+             id="takeItemModel"
+             tabindex="-1"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Взять ресур</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action={{ url_for("takeitem",  id = item.id) }}>
+                            <div class="col-sm-6 mt-2">
+                                <label class="form-label">Название ресурса</label>
+                                <div type="text" class="form-control" name="Title" required>{{ item.title }}</div>
+                            </div>
+                            <div class="col-sm-6 mt-2">
+                                <label class="form-label">Номер ячейки</label>
+                                <div type="text" class="form-control" name="CellId" required>{{ item.cellId }}</div>
+                            </div>
+                            <label class="form-label mt-2">Количество(сейчас на складе {{ item.count }})</label>
+                            <div class="col-sm-6">
+                                <input type="number"
+                                       class="form-control"
+                                       name="Amount"
+                                       max="{{ item.count }}"
+                                       required/>
+                            </div>
+                            
+                            <div class="modal-footer mt-3">
+                                <button type="button" class="btn btn-secondary col-sm-3" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary col-sm-3">Взять</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {# Модалка изменения ресурса #}
+        {% if current_user.is_administrator() %}
+            <button class="btn btn-primary btn-lg mt-3 col-sm-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editItemModel">
+                Изменить
+            </button>
+            <div class="modal fade"
+                 id="editItemModel"
+                 tabindex="-1"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Изменить ресур</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action={{ url_for("edititem",  id = item.id) }}>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Название ресурса</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="Title"
+                                           value="{{ item.title }}"
+                                           required/>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Номер ячейки</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="CellId"
+                                           value="{{ item.cellId }}"
+                                           required/>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="lastName" class="form-label">Количество</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           name="Amount"
+                                           value="{{ item.count }}"
+                                           required/>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="lastName" class="form-label">Опсание (не обязательно)</label>
+                                    <textarea type="text" class="form-control form-control-lg" name="Description" rows ="3" style= "resize: none;">
+									{% if item.description != None %}										{{ item.description.strip() }}{% endif %}
+									</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Отмена
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        Сохранить изменения
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    
+    
+         {# Модалка просмотра истории операций #}
+        {% if current_user.is_administrator() %}
+
+        {% endif %}
+    
+    </div>
+{% endblock body %}
