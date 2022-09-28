@@ -48,7 +48,7 @@ class FDataBase():
         item.title = newItem.title
         item.cellId = newItem.cellId
         item.count = newItem.count
-        item.description = item.description
+        item.description = newItem.description
         
         db.session.commit()
         
