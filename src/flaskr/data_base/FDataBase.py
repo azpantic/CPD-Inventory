@@ -19,10 +19,13 @@ class FDataBase():
         return list(users)[0]
     
     # One page have 20 items
-    def getItemsByPage(self, pageNumber : int) -> list[Item]:
+    def getItemsByPage(self, pageNumber : int ,only_available : bool , search_disable : bool ) -> list[Item]:
         
-        items = db.session.query(Item).all()
-        
+        if only_available:
+            items = db.session.query(Item).where(Item.count != 0)
+        else:
+            items = db.session.query(Item).all()
+            
         return list(items)
     
     def getItemById(self, id : int) -> Item:
@@ -75,8 +78,17 @@ class FDataBase():
         
         return list(db.session.query(Operation).where(Operation.user_id == user_id))
         
-    def searchForItems(self,  search : str) -> list[Item]:
+    def searchForItems(self,  search : str , only_available : bool , search_disable : bool) -> list[Item]:
         
-        return list(db.session.query(Item).filter(Item.title.like(f"%{search}%")))    
+        items = db.session.query(Item).filter(Item.title.like(f"%{search}%"))
+        
+        if only_available:
+            items = items.where(Item.count != 0)
+        
+        return list(items)    
+    
+    def getItemOperationsHistory(self , item_id : int) -> list[Operation]:
+        
+        return list(db.session.query(Operation).where(Operation.item_id == item_id))
     
 dBase : FDataBase = FDataBase()

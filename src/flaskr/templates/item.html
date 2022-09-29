@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{ item.title }}{% endblock title %}
-
+{% block title %}
+    {{ item.title }}
+{% endblock title %}
 {% block body %}
     <div class="container mt-3">
         <h4 class="mb-3">Cтраница ресура</h4>
@@ -32,7 +33,6 @@
                 </div>
             </div>
         </div>
-
         {# Модалка взяться со склада #}
         <button class="btn btn-primary btn-lg mt-3 col-sm-2"
                 data-bs-toggle="modal"
@@ -71,9 +71,10 @@
                                        max="{{ item.count }}"
                                        required/>
                             </div>
-                            
                             <div class="modal-footer mt-3">
-                                <button type="button" class="btn btn-secondary col-sm-3" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button"
+                                        class="btn btn-secondary col-sm-3"
+                                        data-bs-dismiss="modal">Отмена</button>
                                 <button type="submit" class="btn btn-primary col-sm-3">Взять</button>
                             </div>
                         </form>
@@ -81,17 +82,13 @@
                 </div>
             </div>
         </div>
-
         {# Модалка добавление на склад #}
         <button class="btn btn-primary btn-lg mt-3 col-sm-2"
                 data-bs-toggle="modal"
                 data-bs-target="#addItemModel">
             Добавить
         </button>
-        <div class="modal fade"
-             id="addItemModel"
-             tabindex="-1"
-             aria-hidden="true">
+        <div class="modal fade" id="addItemModel" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -119,17 +116,21 @@
                                        max="{{ item.count }}"
                                        required/>
                             </div>
-                            
                             <div class="modal-footer mt-3">
-                                <button type="button" class="btn btn-secondary col-sm-3" data-bs-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-primary col-sm-3">Добавить</button>
+                                <button type="button"
+                                        class="btn btn-secondary col-sm-3"
+                                        data-bs-dismiss="modal">
+                                    Отмена
+                                </button>
+                                <button type="submit" class="btn btn-primary col-sm-3">
+                                    Добавить
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-
         {# Модалка изменения ресурса #}
         {% if current_user.is_administrator() %}
             <button class="btn btn-primary btn-lg mt-3 col-sm-2"
@@ -145,16 +146,21 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Изменить ресур</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                Изменить ресур
+                            </h5>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                    aria-label="Close">
+                            </button>
                         </div>
                         <div class="modal-body">
                             <form method="post" action={{ url_for("edititem",  id = item.id) }}>
                                 <div class="col-sm-6">
-                                    <label class="form-label">Название ресурса</label>
+                                    <label class="form-label">
+                                        Название ресурса
+                                    </label>
                                     <input type="text"
                                            class="form-control"
                                            name="Title"
@@ -162,7 +168,9 @@
                                            required/>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label class="form-label">Номер ячейки</label>
+                                    <label class="form-label">
+                                        Номер ячейки
+                                    </label>
                                     <input type="text"
                                            class="form-control"
                                            name="CellId"
@@ -170,7 +178,9 @@
                                            required/>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label for="lastName" class="form-label">Количество</label>
+                                    <label for="lastName" class="form-label">
+                                        Количество
+                                    </label>
                                     <input type="number"
                                            class="form-control"
                                            name="Amount"
@@ -178,7 +188,9 @@
                                            required/>
                                 </div>
                                 <div class="col-sm-12">
-                                    <label for="lastName" class="form-label">Опсание (не обязательно)</label>
+                                    <label for="lastName" class="form-label">
+                                        Описание (не обязательно)
+                                    </label>
                                     <textarea type="text" class="form-control form-control-lg" name="Description" rows ="3" style= "resize: none;">
 									{% if item.description != None %}										{{ item.description.strip() }}{% endif %}
 									</textarea>
@@ -197,12 +209,49 @@
                 </div>
             </div>
         {% endif %}
-    
-    
-         {# Модалка просмотра истории операций #}
+        {#  Истории операций #}
         {% if current_user.is_administrator() %}
-
+            {% if operations_history.__len__() != 0 %}
+                <h2 class="mt-3">
+                    История операций над ресурсом
+                </h2>
+                <table class="table ">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Тип
+                            </th>
+                            <th scope="col">
+                                Количество
+                            </th>
+                            <th scope="col">
+                                Человек
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for operation in operations_history %}
+                            <tr>
+                                <td>
+                                    <div class={% if operation.type == "Взятие" %} "text-warning" {% else %} "text-success" {% endif %}>
+                                        {{ operation.type }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ operation.amount }}
+                                </td>
+                                <td> 
+                                    <a href={{ url_for() }}>{{ operation.user_name }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h3 class="text-center mt-3">
+                    Этот ресур еще не использовали
+                </h3>
+            {% endif %}
         {% endif %}
-    
     </div>
 {% endblock body %}
