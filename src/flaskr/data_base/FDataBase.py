@@ -31,7 +31,7 @@ class FDataBase():
         
         return item
     
-    def addItem(self, newItem : Item) -> None:
+    def createItem(self, newItem : Item) -> None:
         
         db.session.add(newItem)
         db.session.commit()
@@ -56,6 +56,13 @@ class FDataBase():
         item : Item = db.session.query(Item).get(id)
         
         item.count -= amount
+        
+        db.session.commit()
+        
+    def addItem(self, id : int , amount : int) -> None:
+        item : Item = db.session.query(Item).get(id)
+        
+        item.count += amount
         
         db.session.commit()
         

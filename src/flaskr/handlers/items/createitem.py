@@ -21,6 +21,6 @@ def createitem():
         description = form["Description"]
         newItem : Item = Item(title= title , cellId = cellId, count = amount , description=description )
         
-        dBase.addItem(newItem)
+        dBase.createItem(newItem)
         
     return render_template("creatitem.html")
